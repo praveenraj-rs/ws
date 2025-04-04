@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Set the repository URL and local path
+REPO_URL="git@github.com:praveenraj-rs/notes.git"
+LOCAL_PATH="$HOME/notes"
+
+# Check if the local repository exists and is a git repository
+if [ ! -d "$LOCAL_PATH" ]; then
+    echo "Repository does not exist locally. Cloning..."
+    git clone "$REPO_URL" "$LOCAL_PATH"
+fi
+
+# Navigate to the repository
+cd "$LOCAL_PATH" || exit
+
+# Check for changes in the repository
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Changes detected. Staging and committing..."
+    # Add all changes to the staging area
+    git add .
+
+    # Get the current date in the format date_month_year
+    current_date=$(date +"%d_%m_%Y")
+
+    # Commit with the current date as the message
+    git commit -m "$current_date"
+
+    # Push the changes to the remote repository
+    git push
+else
+    echo "No changes detected."
+fi
