@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # For updates and backups
-alias upd='sudo apt update;sudo apt upgrade;gitNotes;gitWS'
+alias upd='sudo apt update;sudo apt upgrade;ws-gitNotes;ws-gitWS'
 
 # Shortcuts
 alias ai='ollama run llama3.2 $1'
