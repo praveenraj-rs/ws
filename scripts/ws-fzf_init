@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Remove fzf installed via apt
+sudo apt remove -y fzf
+
+# Remove any existing fzf directory
+rm -rf ~/.fzf
+
+# Clone the latest fzf from GitHub
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+
+# Install fzf
+~/.fzf/install --all
+
+# Check fzf version
+fzf --version
+
+echo "fzf installation is complete. To update in the future, run:"
+echo "cd ~/.fzf && git pull && ./install"
+

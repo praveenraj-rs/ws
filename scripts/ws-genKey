@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Function name: sshKey
+sshKey() {
+    if [ -z "$1" ]; then
+        echo "Usage: sshKey <filename>"
+        return 1
+    fi
+
+    local filename="$1"
+    local filepath="$HOME/.ssh/$filename"
+
+    # Create .ssh directory if it doesn't exist
+    mkdir -p "$HOME/.ssh"
+
+    # Generate SSH key
+    ssh-keygen -t rsa -b 4096 -f "$filepath" -N ""
+
+    # Start the ssh-agent
+    eval "$(ssh-agent -s)"
+
+    # Add private key to the ssh-agent
+    ssh-add "$filepath"
+
+    # Echo the public key content
+    echo "Your public key is:"
+    cat "${filepath}.pub"
+}
+
+# Allow the function to run when the script is sourced
+# Otherwise, if you want it to be executable, uncomment the following lines:
+sshKey "$@"
+

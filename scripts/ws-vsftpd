@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Script to set up and enable FTP server using vsftpd
+
+echo "Starting FTP server setup..."
+
+# Install vsftpd if not already installed
+# sudo apt update
+sudo apt install -y vsftpd
+
+# Start the vsftpd service
+sudo systemctl start vsftpd
+
+# Enable the service to run at boot
+sudo systemctl enable vsftpd
+
+# Allow FTP port through firewall
+sudo ufw allow 21/tcp
+
+# Backup the original configuration file
+sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
+
+# Optionally, you can auto-modify the config here (or do it manually)
+# For simplicity, we just remind the user to manually edit if needed
+echo "Please edit /etc/vsftpd.conf to configure FTP settings as needed."
+sleep 2
+sudo vim /etc/vsftpd.conf
+
+# Restart vsftpd to apply any config changes
+sudo systemctl restart vsftpd
+
+echo "FTP server setup complete."
+

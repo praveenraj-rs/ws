@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Script to set up SFTP on a Linux system
+
+echo "Starting SFTP setup..."
+
+# Update and install OpenSSH server
+#sudo apt update
+sudo apt install -y openssh-server
+
+# Ensure the SSH service is enabled and started
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+# Allow SSH through the firewall
+sudo ufw allow 22/tcp
+
+# Create a new SFTP group and user (example: sftpuser)
+sudo groupadd sftpusers
+sudo useradd -m -G sftpusers -s /sbin/nologin sftpuser
+
+# Set password for the new user
+echo "Set password for sftpuser:"
+sudo passwd sftpuser
+
+# Create directory structure and set permissions
+sudo mkdir -p /home/sftpuser/uploads
+sudo chown root:root /home/sftpuser
+sudo chmod 755 /home/sftpuser
+sudo chown sftpuser:sftpusers /home/sftpuser/uploads
+
+# Configure SFTP in sshd_config
+SFTP_CONFIG="Match Group sftpusers
+    ChrootDirectory /home/%u
+    ForceCommand internal-sftp
+    AllowTcpForwarding no
+    X11Forwarding no"
+
+# Backup sshd_config and append SFTP configuration
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+echo "$SFTP_CONFIG" | sudo tee -a /etc/ssh/sshd_config
+
+# Restart SSH to apply changes
+sudo systemctl restart ssh
+
+echo "SFTP setup complete. You can now connect using:"
+echo "sftp sftpuser@<your_server_ip>"
+
